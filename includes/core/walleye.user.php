@@ -183,7 +183,8 @@ class User implements Model
                 if ($insert_session_stmt->execute()) {
                     $session_id = $db->insert_id;
                     $insert_user_session_stmt = $db->prepare('INSERT INTO UserSessions (user_id, session_id) VALUES (?, ?)');
-                    $insert_user_session_stmt->bind_param('ii', $user->getId(), $session_id);
+                    $user_id = $user->getId();
+                    $insert_user_session_stmt->bind_param('ii', $user_id, $session_id);
                     if ($insert_user_session_stmt->execute()) {
                         $_SESSION[User::USER_SESSION] = $session;
                         self::$current_logged_user = $instance = User::withSession();
@@ -307,7 +308,8 @@ class User implements Model
     {
         $db = new Database();
         $change_password_stmt = $db->prepare('UPDATE Users SET password = ? WHERE id = ?');
-        $change_password_stmt->bind_param('si', $password, $this->getId());
+        $user_id = $this->getId();
+        $change_password_stmt->bind_param('si', $password, $user_id);
         return $change_password_stmt->execute();
     }
 
